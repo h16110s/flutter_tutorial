@@ -1,5 +1,6 @@
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_tutorial/app_state.dart';
 import 'package:flutter_tutorial/chat_data.dart';
 
 class ChatHistoryView extends StatefulWidget {
@@ -16,45 +17,21 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
       ScrollController(keepScrollOffset: true, initialScrollOffset: 0.0);
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final style = theme.textTheme.displayMedium!.copyWith(
       color: theme.colorScheme.onSurface,
       fontSize: 21,
     );
+    // appStateの取得
+    var appState = context.watch<AppState>();
 
     // チャット履歴
     // リストの0が最新のチャット内容になるようにする
-    List<ChatData> ary = [
-      ChatData(ChatMessageType.received, '以上で終了します'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'お手伝いできることはありますか？'),
-      ChatData(ChatMessageType.received, 'こんにちは！'),
-      ChatData(ChatMessageType.sent, 'こんにちは'),
-    ];
+    List<ChatData> ary = appState.history.toList();
 
     return Expanded(
-      child: ListView(
+        child: ListView(
       reverse: true, // trueにするとinitalScrollOffset:0 で一番下スタートになる
       controller: scrollController,
       children: [
