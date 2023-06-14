@@ -27,14 +27,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('チャットアプリ'),
       ),
       body: const Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 40.0),
+        padding: EdgeInsets.only(left: 10, right: 10, bottom: 40.0),
         child: Column(
           children: [
             // チャット履歴
@@ -49,10 +49,22 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class ChatHistoryView extends StatelessWidget {
+class ChatHistoryView extends StatefulWidget {
   const ChatHistoryView({
     super.key,
   });
+
+  @override
+  State<ChatHistoryView> createState() => _ChatHistoryViewState();
+}
+
+class _ChatHistoryViewState extends State<ChatHistoryView> {
+  ScrollController scrollController = ScrollController(keepScrollOffset: true, initialScrollOffset: 0.0);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +74,10 @@ class ChatHistoryView extends StatelessWidget {
       fontSize: 21,
     );
 
-    // TODO: AppStateから取得する
+    // チャット履歴
+    // リストの0が最新のチャット内容になるようにする
     List<ChatData> ary = [
+      ChatData(ChatMessageType.received, '以上で終了します'),
       ChatData(ChatMessageType.sent, 'hello!'),
       ChatData(ChatMessageType.received, 'hello'),
       ChatData(ChatMessageType.sent, 'hello!'),
@@ -80,17 +94,18 @@ class ChatHistoryView extends StatelessWidget {
       ChatData(ChatMessageType.received, 'hello'),
       ChatData(ChatMessageType.sent, 'hello!'),
       ChatData(ChatMessageType.received, 'hello'),      
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
-      ChatData(ChatMessageType.sent, 'hello!'),
-      ChatData(ChatMessageType.received, 'hello'),
+      ChatData(ChatMessageType.sent, 'お手伝いできることはありますか？'),
+      ChatData(ChatMessageType.received, 'こんにちは！'),
+      ChatData(ChatMessageType.sent, 'こんにちは'),
     ];
 
     return Expanded(
       child: ListView(
+        reverse: true, // trueにするとinitalScrollOffset:0 で一番下スタートになる
+        controller: scrollController,
         children: [
           for (ChatData chat in ary)
-            if (chat.from == 'user')
+            if (chat.type == ChatMessageType.sent)
               ListTile(
                 leading: const Icon(Icons.account_circle, color: Colors.blue),
                 title: Text(chat.message, style: style),
