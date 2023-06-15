@@ -51,6 +51,7 @@ class _SendFormState extends State<SendForm> {
     // appStateの取得
     var appState = context.watch<AppState>();
 
+    Function onPressed2 = sendBtnOnPressed(appState);
     return Row(
       children: <Widget>[
         Flexible(
@@ -66,20 +67,26 @@ class _SendFormState extends State<SendForm> {
           ),
         ),
         IconButton(
-          onPressed: () {
-            String current = appState.current;
-            appState.addHistory(ChatData(ChatMessageType.sent, current));
-            sendChatMessage(current).then((response) {
-              String msg = response['choices'][0]['message']['content'];
-              appState.addHistory(ChatData(ChatMessageType.received, msg));
-            });
-            _editController.clear();
-          },
+          onPressed: () => sendBtnOnPressed(appState),
           icon: const Icon(Icons.send),
           color: theme.colorScheme.primary,
           iconSize: 40,
         )
       ],
     );
+  }
+
+  void sendBtnOnPressed(AppState appState) {
+    String current = appState.current;
+    appState.addHistory(ChatData(ChatMessageType.sent, current));
+    sendChatMessage(current).then((response) {
+      if (response.containsKey('error')) {
+        appState.addHistory(ChatData(ChatMessageType.received, 'エラーが発生しました'));
+      } else {
+        String msg = response['choices'][0]['message']['content'];
+        appState.addHistory(ChatData(ChatMessageType.received, msg));
+      }
+    });
+    _editController.clear();
   }
 }
