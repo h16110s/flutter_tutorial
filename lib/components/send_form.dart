@@ -76,6 +76,9 @@ class _SendFormState extends State<SendForm> {
   }
 
   void sendBtnOnPressed(AppState appState) {
+    if (appState.current.isEmpty) {
+      return;
+    }
     String current = appState.current;
     appState.addHistory(ChatData(ChatMessageType.sent, current));
     sendChatMessage(current).then((response) {
@@ -87,5 +90,6 @@ class _SendFormState extends State<SendForm> {
       }
     });
     _editController.clear();
+    appState.setCurrent('');
   }
 }
