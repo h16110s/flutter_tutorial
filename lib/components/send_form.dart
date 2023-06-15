@@ -51,7 +51,6 @@ class _SendFormState extends State<SendForm> {
     // appStateの取得
     var appState = context.watch<AppState>();
 
-    Function onPressed2 = sendBtnOnPressed(appState);
     return Row(
       children: <Widget>[
         Flexible(
