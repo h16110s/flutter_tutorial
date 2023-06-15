@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -55,6 +56,7 @@ class _SendFormState extends State<SendForm> {
       children: <Widget>[
         Flexible(
           child: TextField(
+            key: const Key("sendTextField"),
             controller: _editController,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -66,6 +68,7 @@ class _SendFormState extends State<SendForm> {
           ),
         ),
         IconButton(
+          key: const Key("sendBtn"),
           onPressed: () => sendBtnOnPressed(appState),
           icon: const Icon(Icons.send),
           color: theme.colorScheme.primary,
@@ -88,6 +91,9 @@ class _SendFormState extends State<SendForm> {
         String msg = response['choices'][0]['message']['content'];
         appState.addHistory(ChatData(ChatMessageType.received, msg));
       }
+    }).catchError((error) {
+      appState.addHistory(
+          ChatData(ChatMessageType.received, '通信時にエラーが発生しました。$error'));
     });
     _editController.clear();
     appState.setCurrent('');
