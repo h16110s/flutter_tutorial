@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,6 +19,7 @@ class SendForm extends StatefulWidget {
 class _SendFormState extends State<SendForm> {
   final _editController = TextEditingController();
 
+  // TODO: AppStateに寄せてもいいくらい
   Future<Map> sendChatMessage(String message) async {
     await dotenv.load(fileName: '.env');
     String apiKey = dotenv.get('API_KEY');
@@ -72,12 +74,18 @@ class _SendFormState extends State<SendForm> {
           icon: const Icon(Icons.send),
           color: theme.colorScheme.primary,
           iconSize: 40,
+        ),        
+        IconButton(
+          onPressed: () => hiveTest(),
+          icon: const Icon(Icons.send),
+          color: theme.colorScheme.secondary,
+          iconSize: 40,
         )
       ],
     );
   }
 
-  void sendBtnOnPressed(AppState appState) {
+  void sendBtnOnPressed(AppState appState) async{
     if (appState.current.isEmpty) {
       return;
     }
@@ -96,5 +104,12 @@ class _SendFormState extends State<SendForm> {
     });
     _editController.clear();
     appState.setCurrent('');
+    var box = await Hive.openBox('testBox');
+    box.put('name', 'flutter');
+  }
+
+  void hiveTest() async {
+    var box = await Hive.openBox('testBox');
+    print('Name: ${box.get('name')}');
   }
 }

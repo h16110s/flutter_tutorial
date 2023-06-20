@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_tutorial/app_state.dart';
 import 'package:flutter_tutorial/components/chat_history_view.dart';
 import 'package:flutter_tutorial/components/send_form.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  var box = await Hive.openBox('testBox');
   runApp(const MyApp());
 }
 
